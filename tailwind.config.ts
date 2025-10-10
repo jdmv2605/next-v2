@@ -12,6 +12,12 @@ const config: Config = {
         '13': 'repeat(13, minmax(0, 1fr))',
       },
       colors: {
+         bio: {
+          primary: '#0B9E93',   // verde-teal principal
+          secondary: '#107C10', // verde oscuro secundario
+          accent: '#6C5CE7',    // morado/acento (para detalles)
+          background: '#076E68', // fondo suave verdoso
+         },
         blue: {
           400: '#2589FE',
           500: '#0070F3',
