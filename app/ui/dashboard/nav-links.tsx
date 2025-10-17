@@ -9,18 +9,18 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 
-// 🔹 Declaramos la interfaz que describe cada enlace
+
 interface LinkItem {
   name: string;
   href: string;
   icon: React.ElementType;
 }
 
-// 🔹 Creamos el arreglo de enlaces usando el tipo LinkItem
+
 const links: LinkItem[] = [
-  { name: 'Home', href: '/dashboard', icon: HomeIcon },
-  { name: 'Invoices', href: '/dashboard/invoices', icon: DocumentDuplicateIcon },
-  { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
+  { name: 'Inicio', href: '/dashboard', icon: HomeIcon },
+  { name: 'Facturas', href: '/dashboard/invoices', icon: DocumentDuplicateIcon },
+  { name: 'Clientes', href: '/dashboard/customers', icon: UserGroupIcon },
 ];
 
 export default function NavLinks() {
@@ -34,14 +34,18 @@ export default function NavLinks() {
             key={link.name}
             href={link.href}
             className={clsx(
-              'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3',
+              // 🔹 ESTILOS PARA NAVEGACIÓN HORIZONTAL
+              'flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all hover:shadow-md',
               {
-                'bg-sky-100 text-blue-600': pathname === link.href,
+                // 🔹 ESTILO ACTIVO
+                'bg-white text-green-700 shadow-lg': pathname === link.href,
+                // 🔹 ESTILO INACTIVO
+                'text-green-100 hover:bg-green-500 hover:text-white': pathname !== link.href,
               },
             )}
           >
-            <LinkIcon className="w-6" />
-            <p className="hidden md:block">{link.name}</p>
+            <LinkIcon className="w-5" />
+            <span>{link.name}</span>
           </Link>
         );
       })}
