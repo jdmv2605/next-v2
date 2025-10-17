@@ -26,7 +26,7 @@ export default function Page() {
   </p>
 
   <Link
-    href="/login"
+    href="/dashboard"
     className="flex items-center gap-3 self-start rounded-lg bg-bio-primary px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-bio-secondary md:text-base"
   >
     <span>Explorar</span> <ArrowRightIcon className="w-5 md:w-6" />

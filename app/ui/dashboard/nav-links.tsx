@@ -18,7 +18,7 @@ interface LinkItem {
 
 // 🔹 Creamos el arreglo de enlaces usando el tipo LinkItem
 const links: LinkItem[] = [
-  { name: 'Home', href: '/', icon: HomeIcon },
+  { name: 'Home', href: '/dashboard', icon: HomeIcon },
   { name: 'Invoices', href: '/dashboard/invoices', icon: DocumentDuplicateIcon },
   { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
 ];
