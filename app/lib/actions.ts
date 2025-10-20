@@ -3,8 +3,8 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import postgres from 'postgres';
-import { signIn } from '@/auth'; // AGREGAR esta importación
-import { AuthError } from 'next-auth'; // AGREGAR esta importación
+import { signIn } from '@/auth';
+import { AuthError } from 'next-auth';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
@@ -34,7 +34,6 @@ export type State = {
   message?: string | null;
 };
 
-// AGREGAR la función authenticate
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
@@ -73,11 +72,13 @@ export async function createInvoice(prevState: State, formData: FormData) {
   const date = new Date().toISOString().split('T')[0];
  
   try {
+    // 🔹 VERIFICAR que el customerId existe en duennos
     await sql`
       INSERT INTO invoices (customer_id, amount, status, date)
       VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
     `;
   } catch (error) {
+    console.error('❌ ERROR creando factura:', error);
     return {
       message: 'Database Error: Failed to Create Invoice.',
     };
@@ -119,4 +120,39 @@ export async function deleteInvoice(id: string) {
     console.error(error);
     return { message: 'Database Error: Failed to Delete Invoice.' };
   }
+}
+
+export async function createDuenno(prevState: State, formData: FormData) {
+  const validatedFields = z.object({
+    name: z.string().min(1, 'El nombre es requerido'),
+    email: z.string().email('Email inválido'),
+    image_url: z.string().optional(),
+  }).safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    image_url: formData.get('image_url'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Customer.',
+    };
+  }
+
+  const { name, email, image_url } = validatedFields.data;
+
+  try {
+    await sql`
+      INSERT INTO customers (name, email, image_url)
+      VALUES (${name}, ${email}, ${image_url || '/customers/default-avatar.png'})
+    `;
+  } catch (error) {
+    return {
+      message: 'Database Error: Failed to Create Customer.',
+    };
+  }
+
+  revalidatePath('/dashboard/duennos');
+  redirect('/dashboard/duennos');
 }

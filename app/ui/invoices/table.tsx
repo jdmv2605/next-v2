@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
 import InvoiceStatus from '@/app/ui/invoices/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredInvoices } from '@/app/lib/data';
+import { fetchFilteredInvoicesWithDuennos } from '@/app/lib/data';
 
 export default async function InvoicesTable({
   query,
@@ -11,7 +11,7 @@ export default async function InvoicesTable({
   query: string;
   currentPage: number;
 }) {
-  const invoices = await fetchFilteredInvoices(query, currentPage);
+  const invoices = await fetchFilteredInvoicesWithDuennos(query, currentPage);
 
   return (
     <div className="mt-6 flow-root">
@@ -21,7 +21,7 @@ export default async function InvoicesTable({
             {invoices?.map((invoice) => (
               <div
                 key={invoice.id}
-                className="mb-2 w-full rounded-md bg-white p-4"
+                className="mb-2 w-full rounded-md bg-white p-4 shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
@@ -31,9 +31,9 @@ export default async function InvoicesTable({
                         className="mr-2 rounded-full"
                         width={28}
                         height={28}
-                        alt={`${invoice.name}'s profile picture`}
+                        alt={`Foto de ${invoice.name}`}
                       />
-                      <p>{invoice.name}</p>
+                      <p className="font-medium text-gray-900">{invoice.name}</p>
                     </div>
                     <p className="text-sm text-gray-500">{invoice.email}</p>
                   </div>
@@ -41,10 +41,10 @@ export default async function InvoicesTable({
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
-                    <p className="text-xl font-medium">
+                    <p className="text-xl font-medium text-green-800">
                       {formatCurrency(invoice.amount)}
                     </p>
-                    <p>{formatDateToLocal(invoice.date)}</p>
+                    <p className="text-sm text-gray-600">{formatDateToLocal(invoice.date)}</p>
                   </div>
                   <div className="flex justify-end gap-2">
                     <UpdateInvoice id={invoice.id} />
@@ -55,53 +55,53 @@ export default async function InvoicesTable({
             ))}
           </div>
           <table className="hidden min-w-full text-gray-900 md:table">
-            <thead className="rounded-lg text-left text-sm font-normal">
-              <tr>
-                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Customer
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Email
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Amount
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Date
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Status
-                </th>
-                <th scope="col" className="relative py-3 pl-6 pr-3">
-                  <span className="sr-only">Edit</span>
-                </th>
-              </tr>
-            </thead>
+<thead className="rounded-lg text-left text-sm font-normal">
+  <tr>
+    <th scope="col" className="px-4 py-5 font-medium sm:pl-6 bg-gradient-to-r from-green-600 to-emerald-600 text-white">
+      Paciente {/* 🔹 CAMBIADO */}
+    </th>
+    <th scope="col" className="px-3 py-5 font-medium bg-gradient-to-r from-green-600 to-emerald-600 text-white">
+      Email
+    </th>
+    <th scope="col" className="px-3 py-5 font-medium bg-gradient-to-r from-green-600 to-emerald-600 text-white">
+      Monto
+    </th>
+    <th scope="col" className="px-3 py-5 font-medium bg-gradient-to-r from-green-600 to-emerald-600 text-white">
+      Fecha
+    </th>
+    <th scope="col" className="px-3 py-5 font-medium bg-gradient-to-r from-green-600 to-emerald-600 text-white">
+      Estado
+    </th>
+    <th scope="col" className="relative py-3 pl-6 pr-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white">
+      <span className="sr-only">Acciones</span>
+    </th>
+  </tr>
+</thead>
             <tbody className="bg-white">
               {invoices?.map((invoice) => (
                 <tr
                   key={invoice.id}
-                  className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
+                  className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg hover:bg-green-50 transition-colors"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
                       <Image
                         src={invoice.image_url}
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
+                        className="rounded-full border-2 border-green-300"
+                        width={32}
+                        height={32}
+                        alt={`Foto de ${invoice.name}`}
                       />
-                      <p>{invoice.name}</p>
+                      <p className="font-medium text-gray-900">{invoice.name}</p>
                     </div>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
+                  <td className="whitespace-nowrap px-3 py-3 text-gray-700">
                     {invoice.email}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
+                  <td className="whitespace-nowrap px-3 py-3 font-semibold text-green-800">
                     {formatCurrency(invoice.amount)}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
+                  <td className="whitespace-nowrap px-3 py-3 text-gray-700">
                     {formatDateToLocal(invoice.date)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">

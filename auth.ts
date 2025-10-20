@@ -1,16 +1,14 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { authConfig } from './auth.config';
 import { z } from 'zod';
-import type { User } from '@/app/lib/definitions';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs'; // ← Cambiado de 'bcrypt'
 import postgres from 'postgres';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
-async function getUser(email: string): Promise<User | undefined> {
+async function getUser(email: string): Promise<any | undefined> {
   try {
-    const user = await sql<User[]>`SELECT * FROM users WHERE email=${email}`;
+    const user = await sql`SELECT * FROM users WHERE email=${email}`;
     return user[0];
   } catch (error) {
     console.error('Failed to fetch user:', error);
@@ -18,24 +16,35 @@ async function getUser(email: string): Promise<User | undefined> {
   }
 }
 
-export const { auth, signIn, signOut } = NextAuth({
-  ...authConfig,
+export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
+      credentials: {
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
+      },
       async authorize(credentials) {
         const parsedCredentials = z
-          .object({ email: z.string().email(), password: z.string().min(6) })
+          .object({ 
+            email: z.string().email(), 
+            password: z.string().min(6) 
+          })
           .safeParse(credentials);
 
         if (parsedCredentials.success) {
           const { email, password } = parsedCredentials.data;
           const user = await getUser(email);
+          
           if (!user) return null;
           
-          // AGREGAR esta parte para comparar contraseñas
           const passwordsMatch = await bcrypt.compare(password, user.password);
-
-          if (passwordsMatch) return user;
+          if (passwordsMatch) {
+            return {
+              id: user.id,
+              email: user.email,
+              name: user.name,
+            };
+          }
         }
 
         console.log('Invalid credentials');
@@ -43,4 +52,21 @@ export const { auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token && session.user) {
+        session.user.id = token.id as string;
+      }
+      return session;
+    },
+  },
+  pages: {
+    signIn: '/login',
+  },
 });

@@ -12,21 +12,23 @@ const config: Config = {
         '13': 'repeat(13, minmax(0, 1fr))',
       },
       colors: {
-         bio: {
-          primary: '#0B9E93',   // verde-teal principal
-          secondary: '#107C10', // verde oscuro secundario
-          accent: '#6C5CE7',    // morado/acento (para detalles)
-          background: '#076E68', // fondo suave verdoso
-         },
-        blue: {
-          400: '#2589FE',
-          500: '#0070F3',
-          600: '#2F6FEB',
+        // 🔹 COLORES VERDES MÉDICOS PROFESIONALES
+        green: {
+          50: '#f0fdf4',
+          100: '#dcfce7',
+          200: '#bbf7d0',
+          300: '#86efac',
+          400: '#4ade80',
+          500: '#22c55e',
+          600: '#16a34a',
+          700: '#15803d',
+          800: '#166534',
+          900: '#14532d',
         },
       },
       fontFamily: {
-        poppins: ['Poppins', 'sans-serif'], // aquí defines la fuente
-        inter: ['Inter', 'sans-serif'], // y también Inter por si la usas
+        poppins: ['Poppins', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
       },
       keyframes: {
         shimmer: {
@@ -35,6 +37,9 @@ const config: Config = {
           },
         },
       },
+      backgroundImage: {
+        'gradient-medical': 'linear-gradient(135deg, #16a34a, #15803d)',
+      }
     },
   },
   plugins: [require('@tailwindcss/forms')],

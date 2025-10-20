@@ -9,22 +9,21 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 
-
 interface LinkItem {
   name: string;
   href: string;
   icon: React.ElementType;
 }
 
-
 const links: LinkItem[] = [
   { name: 'Inicio', href: '/dashboard', icon: HomeIcon },
-  { name: 'Facturas', href: '/dashboard/invoices', icon: DocumentDuplicateIcon },
-  { name: 'Clientes', href: '/dashboard/customers', icon: UserGroupIcon },
+  { name: 'Servicios', href: '/dashboard/invoices', icon: DocumentDuplicateIcon },
+  { name: 'Pacientes', href: '/dashboard/duennos', icon: UserGroupIcon }, // 🔹 CAMBIADO
 ];
 
 export default function NavLinks() {
   const pathname = usePathname();
+
   return (
     <>
       {links.map((link) => {
@@ -34,13 +33,10 @@ export default function NavLinks() {
             key={link.name}
             href={link.href}
             className={clsx(
-              // 🔹 ESTILOS PARA NAVEGACIÓN HORIZONTAL
-              'flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all hover:shadow-md',
+              'flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 transform hover:scale-105',
               {
-                // 🔹 ESTILO ACTIVO
-                'bg-white text-green-700 shadow-lg': pathname === link.href,
-                // 🔹 ESTILO INACTIVO
-                'text-green-100 hover:bg-green-500 hover:text-white': pathname !== link.href,
+                'bg-green-500 text-white shadow-lg ring-2 ring-green-300': pathname === link.href,
+                'bg-transparent text-green-100 hover:bg-green-500 hover:text-white': pathname !== link.href,
               },
             )}
           >
