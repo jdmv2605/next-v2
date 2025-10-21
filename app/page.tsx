@@ -40,7 +40,7 @@ export default function Page() {
             alt="Equipos biomédicos"
           />
           <Image
-            src="/hero-biomedicine2-desktop2.jpeg"
+            src="/hero-biomedicine2-desktop.jpeg"
             width={2000}
             height={1000}
             className="hidden md:block -mt-10 ml-30 rounded-lg shadow-xl"
